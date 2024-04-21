@@ -3,7 +3,7 @@
 $host = "localhost";
 $username = "root";
 $password = "";
-$dbname = "notes_database";
+$dbname = "social_db";
 
 // Database connection
 $conn = new mysqli($host, $username, $password, $dbname);
@@ -13,10 +13,10 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id = $_POST['id'];
+    $post_id = $_POST['post_id'];
 
     // SQL to delete a record
-    $sql = "DELETE FROM notes WHERE id = $id";
+    $sql = "DELETE FROM posts WHERE post_id = $post_id";
 
     if ($conn->query($sql) === TRUE) {
         header("Location: index.php");

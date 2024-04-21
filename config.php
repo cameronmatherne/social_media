@@ -1,8 +1,8 @@
 <?php
-$host       = "localhost";
-$username   = "root";
-$password   = "root";
-$dbname     = "notes_database"; 
+$host = "localhost";
+$username = "root";
+$password = "root";
+$dbname = "social_db";
 
 // Database connection
 $conn = new mysqli($host, $username, $password, $dbname);

@@ -1,56 +1,77 @@
 <?php
 
-$host       = "localhost";
-$username   = "root";
-$password   = "";
-$dbname     = "notes_database"; 
+$host = "localhost";
+$username = "root";
+$password = "";
+$dbname = "social_db";
 
-// Database connection
-$conn = new mysqli($host, $username, $password, $dbname);
+// Create connection
+$conn = mysqli_connect($host, $username, $password, $dbname);
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    $conn = new mysqli($host, $username, $password, $dbname);
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
     $title = $_POST['title'];
     $content = $_POST['content'];
+    $poster = $_POST['poster'];
+    $sql = "INSERT INTO posts (title, content, poster) VALUES ('$title', '$content', '$poster')";
 
-    $sql = "INSERT INTO notes (title, content) VALUES (?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $title, $content);
-
-    if ($stmt->execute()) {
+    if (mysqli_query($conn, $sql)) {
         header("Location: index.php");
-        echo "Note successfully added.";
-
+        exit;
     } else {
-        echo "Error: " . $stmt->error;
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }
 
-    $stmt->close();
-    $conn->close();
+    mysqli_close($conn);
 }
 
 ?>
 
-<h2>Add a note</h2>
+<!DOCTYPE html>
+<html lang="en">
 
-<form method="post">
-    <label for="title">Note title:</label>
-    <input type="text" name="title" id="title">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Post</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-    <label for="content">Note content:</label>
-    <textarea name="content" id="content" rows="4" cols="50"></textarea>
+<body>
 
-    <input type="submit" name="submit" value="Submit">
-</form>
+    <div class="container mt-5">
+        <h2>Add a Post</h2>
+        <form method="post">
+            <div class="form-group">
+                <label for="poster">Username:</label>
+                <input type="text" class="form-control" name="poster" id="poster" required>
+            </div>
 
-<a href="index.php">Back to home</a>
+            <div class="form-group">
+                <label for="title">Note title:</label>
+                <input type="text" class="form-control" name="title" id="title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="content">Note content:</label>
+                <textarea class="form-control" name="content" id="content" rows="4" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+        </form>
+
+        <a href="index.php" class="btn btn-secondary mt-3">Back to Home</a>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
